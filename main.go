@@ -37,5 +37,5 @@ func main() {
 	mux.Handle("/a", coap.HandlerFunc(handleA))
 	mux.Handle("/b", coap.HandlerFunc(handleB))
 
-	log.Fatal(coap.ListenAndServe("udp", ":5688", mux))
+	log.Fatal(coap.ListenAndServe("udp", ":5683", mux))
 }
