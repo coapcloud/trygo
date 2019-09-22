@@ -2,11 +2,15 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
 	coap "github.com/go-ocf/go-coap"
+	flag "github.com/spf13/pflag"
 )
+
+var port = flag.IntP("port", "p", 5683, "coap port to listen on")
 
 func handleA(w coap.ResponseWriter, req *coap.Request) {
 	log.Printf("Got message in handleA: path=%q: %#v from %v", req.Msg.Path(), req.Msg, req.Client.RemoteAddr())
@@ -33,9 +37,12 @@ func handleB(w coap.ResponseWriter, req *coap.Request) {
 }
 
 func main() {
+	flag.Parse()
+
 	mux := coap.NewServeMux()
 	mux.Handle("/a", coap.HandlerFunc(handleA))
 	mux.Handle("/b", coap.HandlerFunc(handleB))
 
-	log.Fatal(coap.ListenAndServe("udp", ":5683", mux))
+	fmt.Printf("serving coap requests on %d\n", *port)
+	log.Fatal(coap.ListenAndServe("udp", fmt.Sprintf(":%d", *port), mux))
 }
